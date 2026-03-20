@@ -1,0 +1,3 @@
+channel,order_id,payout_reference,settlement_date,total_received,pending_settlement,refunds,disputes,status,currency
+Amazon,AMZ-1003,UTR-AMZ-APR-03,2026-03-20,118500,4200,800,0,partial,INR
+Amazon,AMZ-1004,UTR-AMZ-APR-04,2026-03-21,97500,0,1200,300,received,INR

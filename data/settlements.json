@@ -1,0 +1,210 @@
+{
+  "records": [
+    {
+      "id": "set_amz1001",
+      "uniqueKey": "amazon|AMZ-1001|UTR-AMZ-APR-01|2026-03-10|128450.00",
+      "channel": "amazon",
+      "marketplaceLabel": "Amazon",
+      "orderId": "AMZ-1001",
+      "payoutReference": "UTR-AMZ-APR-01",
+      "settlementDate": "2026-03-10",
+      "grossAmount": 128450,
+      "totalReceived": 120000,
+      "pendingSettlements": 6500,
+      "refunds": 1250,
+      "disputes": 700,
+      "feeAmount": 0,
+      "status": "partial",
+      "currency": "INR",
+      "sourceFile": "amazon-initial.csv",
+      "uploadedAt": "2026-03-18T08:30:00.000Z",
+      "rawRow": {
+        "channel": "Amazon",
+        "order_id": "AMZ-1001",
+        "settlement_date": "2026-03-10",
+        "total_received": "120000",
+        "pending_settlement": "6500",
+        "refunds": "1250",
+        "disputes": "700"
+      }
+    },
+    {
+      "id": "set_amz1002",
+      "uniqueKey": "amazon|AMZ-1002|UTR-AMZ-APR-02|2026-03-14|92500.00",
+      "channel": "amazon",
+      "marketplaceLabel": "Amazon",
+      "orderId": "AMZ-1002",
+      "payoutReference": "UTR-AMZ-APR-02",
+      "settlementDate": "2026-03-14",
+      "grossAmount": 92500,
+      "totalReceived": 90500,
+      "pendingSettlements": 0,
+      "refunds": 1250,
+      "disputes": 750,
+      "feeAmount": 0,
+      "status": "received",
+      "currency": "INR",
+      "sourceFile": "amazon-initial.csv",
+      "uploadedAt": "2026-03-18T08:30:00.000Z",
+      "rawRow": {
+        "channel": "Amazon",
+        "order_id": "AMZ-1002",
+        "settlement_date": "2026-03-14",
+        "total_received": "90500",
+        "pending_settlement": "0",
+        "refunds": "1250",
+        "disputes": "750"
+      }
+    },
+    {
+      "id": "set_flp2001",
+      "uniqueKey": "flipkart|FLP-2001|UTR-FLP-APR-01|2026-03-11|78500.00",
+      "channel": "flipkart",
+      "marketplaceLabel": "Flipkart",
+      "orderId": "FLP-2001",
+      "payoutReference": "UTR-FLP-APR-01",
+      "settlementDate": "2026-03-11",
+      "grossAmount": 78500,
+      "totalReceived": 72500,
+      "pendingSettlements": 4000,
+      "refunds": 1500,
+      "disputes": 500,
+      "feeAmount": 0,
+      "status": "partial",
+      "currency": "INR",
+      "sourceFile": "flipkart-initial.csv",
+      "uploadedAt": "2026-03-18T08:45:00.000Z",
+      "rawRow": {
+        "channel": "Flipkart",
+        "order_id": "FLP-2001",
+        "settlement_date": "2026-03-11",
+        "total_received": "72500",
+        "pending_settlement": "4000",
+        "refunds": "1500",
+        "disputes": "500"
+      }
+    },
+    {
+      "id": "set_flp2002",
+      "uniqueKey": "flipkart|FLP-2002|UTR-FLP-APR-02|2026-03-15|120600.00",
+      "channel": "flipkart",
+      "marketplaceLabel": "Flipkart",
+      "orderId": "FLP-2002",
+      "payoutReference": "UTR-FLP-APR-02",
+      "settlementDate": "2026-03-15",
+      "grossAmount": 120600,
+      "totalReceived": 110500,
+      "pendingSettlements": 6400,
+      "refunds": 2000,
+      "disputes": 1700,
+      "feeAmount": 0,
+      "status": "partial",
+      "currency": "INR",
+      "sourceFile": "flipkart-initial.csv",
+      "uploadedAt": "2026-03-18T08:45:00.000Z",
+      "rawRow": {
+        "channel": "Flipkart",
+        "order_id": "FLP-2002",
+        "settlement_date": "2026-03-15",
+        "total_received": "110500",
+        "pending_settlement": "6400",
+        "refunds": "2000",
+        "disputes": "1700"
+      }
+    },
+    {
+      "id": "set_myn3001",
+      "uniqueKey": "myntra|MYN-3001|UTR-MYN-APR-01|2026-03-12|66500.00",
+      "channel": "myntra",
+      "marketplaceLabel": "Myntra",
+      "orderId": "MYN-3001",
+      "payoutReference": "UTR-MYN-APR-01",
+      "settlementDate": "2026-03-12",
+      "grossAmount": 66500,
+      "totalReceived": 59800,
+      "pendingSettlements": 4200,
+      "refunds": 1900,
+      "disputes": 600,
+      "feeAmount": 0,
+      "status": "partial",
+      "currency": "INR",
+      "sourceFile": "myntra-initial.csv",
+      "uploadedAt": "2026-03-18T09:00:00.000Z",
+      "rawRow": {
+        "channel": "Myntra",
+        "order_id": "MYN-3001",
+        "settlement_date": "2026-03-12",
+        "total_received": "59800",
+        "pending_settlement": "4200",
+        "refunds": "1900",
+        "disputes": "600"
+      }
+    },
+    {
+      "id": "set_myn3002",
+      "uniqueKey": "myntra|MYN-3002|UTR-MYN-APR-02|2026-03-17|81400.00",
+      "channel": "myntra",
+      "marketplaceLabel": "Myntra",
+      "orderId": "MYN-3002",
+      "payoutReference": "UTR-MYN-APR-02",
+      "settlementDate": "2026-03-17",
+      "grossAmount": 81400,
+      "totalReceived": 76000,
+      "pendingSettlements": 3000,
+      "refunds": 900,
+      "disputes": 1500,
+      "feeAmount": 0,
+      "status": "partial",
+      "currency": "INR",
+      "sourceFile": "myntra-initial.csv",
+      "uploadedAt": "2026-03-18T09:00:00.000Z",
+      "rawRow": {
+        "channel": "Myntra",
+        "order_id": "MYN-3002",
+        "settlement_date": "2026-03-17",
+        "total_received": "76000",
+        "pending_settlement": "3000",
+        "refunds": "900",
+        "disputes": "1500"
+      }
+    }
+  ],
+  "uploads": [
+    {
+      "id": "upl_seed_amazon",
+      "fileName": "amazon-initial.csv",
+      "uploadedAt": "2026-03-18T08:30:00.000Z",
+      "rowCount": 2,
+      "insertedCount": 2,
+      "updatedCount": 0,
+      "skippedCount": 0,
+      "channels": [
+        "amazon"
+      ]
+    },
+    {
+      "id": "upl_seed_flipkart",
+      "fileName": "flipkart-initial.csv",
+      "uploadedAt": "2026-03-18T08:45:00.000Z",
+      "rowCount": 2,
+      "insertedCount": 2,
+      "updatedCount": 0,
+      "skippedCount": 0,
+      "channels": [
+        "flipkart"
+      ]
+    },
+    {
+      "id": "upl_seed_myntra",
+      "fileName": "myntra-initial.csv",
+      "uploadedAt": "2026-03-18T09:00:00.000Z",
+      "rowCount": 2,
+      "insertedCount": 2,
+      "updatedCount": 0,
+      "skippedCount": 0,
+      "channels": [
+        "myntra"
+      ]
+    }
+  ]
+}

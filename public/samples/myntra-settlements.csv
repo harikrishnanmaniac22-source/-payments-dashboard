@@ -1,0 +1,3 @@
+marketplace,order_id,payout_reference,settlement_date,total_received,pending_settlement,refunds,disputes,status,currency
+Myntra,MYN-3003,UTR-MYN-APR-03,2026-03-20,64800,5000,1100,200,pending,INR
+Myntra,MYN-3004,UTR-MYN-APR-04,2026-03-21,78200,1400,700,900,partial,INR
