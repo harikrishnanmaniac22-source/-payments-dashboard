@@ -62,6 +62,7 @@ export function SettlementsTable({
             <TableHeader>
               <TableRow className="border-white/10">
                 {showChannel && <TableHead className="text-slate-300">Channel</TableHead>}
+                <TableHead className="text-slate-300">Brand</TableHead>
                 <TableHead className="text-slate-300">Order ID</TableHead>
                 <TableHead className="text-slate-300">Settlement Date</TableHead>
                 <TableHead className="text-right text-slate-300">Received</TableHead>
@@ -81,20 +82,13 @@ export function SettlementsTable({
                     {showChannel && (
                       <TableCell className="font-medium text-slate-200">{record.marketplaceLabel}</TableCell>
                     )}
+                    <TableCell className="font-medium text-slate-200 capitalize">{record.brand}</TableCell>
                     <TableCell className="font-medium text-white">{record.orderId}</TableCell>
                     <TableCell className="text-slate-300">{formatDate(record.settlementDate)}</TableCell>
-                    <TableCell className="text-right text-slate-200">
-                      {formatCurrency(record.totalReceived, record.currency)}
-                    </TableCell>
-                    <TableCell className="text-right text-amber-200">
-                      {formatCurrency(record.pendingSettlements, record.currency)}
-                    </TableCell>
-                    <TableCell className="text-right text-rose-200">
-                      {formatCurrency(record.refunds, record.currency)}
-                    </TableCell>
-                    <TableCell className="text-right text-fuchsia-200">
-                      {formatCurrency(record.disputes, record.currency)}
-                    </TableCell>
+                    <TableCell className="text-right text-slate-200">{formatCurrency(record.totalReceived)}</TableCell>
+                    <TableCell className="text-right text-amber-200">{formatCurrency(record.pendingSettlements)}</TableCell>
+                    <TableCell className="text-right text-rose-200">{formatCurrency(record.refunds)}</TableCell>
+                    <TableCell className="text-right text-fuchsia-200">{formatCurrency(record.disputes)}</TableCell>
                     <TableCell>
                       <Badge className={status.className}>
                         <StatusIcon className="mr-1 size-3" />

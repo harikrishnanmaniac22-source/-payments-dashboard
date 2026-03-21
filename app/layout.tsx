@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
+import { Toaster } from '@/components/ui/toaster'
+
 export const metadata: Metadata = {
   title: 'Marketplace Settlements Dashboard',
   description: 'Track Amazon, Flipkart, and Myntra settlement KPIs with CSV uploads and dynamic recalculation.',
@@ -34,6 +36,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-sans antialiased">
         {children}
+        <Toaster />
         <Analytics />
       </body>
     </html>

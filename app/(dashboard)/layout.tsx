@@ -1,14 +1,23 @@
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { DashboardSidebar } from "@/components/dashboard-sidebar"
+import { redirect } from "next/navigation"
 
-export default function DashboardLayout({
+import { DashboardSidebar } from "@/components/dashboard-sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { getCurrentSessionUser } from "@/lib/auth"
+
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const sessionUser = await getCurrentSessionUser()
+
+  if (!sessionUser) {
+    redirect("/login")
+  }
+
   return (
     <SidebarProvider>
-      <DashboardSidebar />
+      <DashboardSidebar username={sessionUser.username} />
       <SidebarInset className="bg-background">
         {children}
       </SidebarInset>

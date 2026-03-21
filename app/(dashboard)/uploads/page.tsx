@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, DatabaseZap, FileSpreadsheet, ShieldCheck } from "lucide-react"
+import { ArrowRight, DatabaseZap, FileSpreadsheet, ShieldCheck, type LucideIcon } from "lucide-react"
 
 import { DashboardHeader } from "@/components/dashboard-header"
 import { UploadCsvForm } from "@/components/upload-csv-form"
@@ -50,12 +50,26 @@ export default async function UploadsPage() {
               <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-200">
                 Production note: this local workspace persists data to a JSON store. The architecture doc outlines a Postgres schema for scaling this to production.
               </div>
-              <Button asChild variant="outline" className="w-full border-white/10 bg-transparent text-white hover:bg-white/5">
-                <Link href="/samples/amazon-settlements.csv">
-                  <FileSpreadsheet className="size-4" />
-                  Download sample CSV
-                </Link>
-              </Button>
+              <div className="grid gap-2">
+                <Button asChild variant="outline" className="w-full border-white/10 bg-transparent text-white hover:bg-white/5">
+                  <Link href="/templates/amazon-template.csv">
+                    <FileSpreadsheet className="size-4" />
+                    Amazon template.csv
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full border-white/10 bg-transparent text-white hover:bg-white/5">
+                  <Link href="/templates/flipkart-template.csv">
+                    <FileSpreadsheet className="size-4" />
+                    Flipkart template.csv
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full border-white/10 bg-transparent text-white hover:bg-white/5">
+                  <Link href="/templates/myntra-template.csv">
+                    <FileSpreadsheet className="size-4" />
+                    Myntra template.csv
+                  </Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -127,7 +141,7 @@ function InfoCard({
 }: {
   title: string
   description: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: LucideIcon
 }) {
   return (
     <Card className="border-white/10 bg-white/5 backdrop-blur-sm">

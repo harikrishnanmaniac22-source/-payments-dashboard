@@ -1,0 +1,2 @@
+firstName,lastName,dob,username,passwordSalt,passwordHash,createdAt
+Hari,krishnan,2004-09-22,harimaniac,4db5a537b4ebf0934ac0f472b4d05a1f,30d5780e32958fefa626c1cc6a8e6292bbf8f398245a46564332e874769b67a828ba98e75d51a7f0527d199d912cf238b60dfeb0166c9a80efa1a604d9841d4a,2026-03-21T10:25:30.297Z

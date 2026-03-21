@@ -2,8 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { FileSpreadsheet, LifeBuoy, WalletCards } from "lucide-react"
+import { FileSpreadsheet, LifeBuoy, UserRound, WalletCards } from "lucide-react"
 
+import { LogoutButton } from "@/components/auth/logout-button"
 import { dashboardPages } from "@/lib/navigation"
 import {
   Sidebar,
@@ -19,7 +20,11 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar"
 
-export function DashboardSidebar() {
+interface DashboardSidebarProps {
+  username: string
+}
+
+export function DashboardSidebar({ username }: DashboardSidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -65,6 +70,18 @@ export function DashboardSidebar() {
       <SidebarSeparator />
 
       <SidebarFooter className="p-2">
+        <div className="mb-2 rounded-2xl border border-white/10 bg-white/5 p-3 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-cyan-400/15 text-cyan-200">
+              <UserRound className="size-4" />
+            </div>
+            <div className="min-w-0 group-data-[collapsible=icon]:hidden">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-slate-500">Signed in</p>
+              <p className="truncate text-sm font-medium text-slate-200">{username}</p>
+            </div>
+          </div>
+        </div>
+
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="CSV Mapping Guide">
@@ -77,6 +94,9 @@ export function DashboardSidebar() {
               <LifeBuoy className="size-4" />
               <span>Support Notes</span>
             </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <LogoutButton />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

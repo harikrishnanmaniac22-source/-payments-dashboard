@@ -1,0 +1,2 @@
+marketplace,brand,order_id,payout_reference,settlement_date,total_received,pending_settlement,refunds,disputes,status,currency
+Flipkart,Maniac,FLP-TEMPLATE-0001,UTR-FLP-TEMPLATE-0001,2026-03-20,98500,2800,600,0,pending,INR

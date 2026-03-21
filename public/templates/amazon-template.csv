@@ -1,0 +1,2 @@
+marketplace,brand,order_id,payout_reference,settlement_date,total_received,pending_settlement,refunds,disputes,status,currency
+Amazon,Maniac,AMZ-TEMPLATE-0001,UTR-AMZ-TEMPLATE-0001,2026-03-20,125000,3500,800,0,pending,INR

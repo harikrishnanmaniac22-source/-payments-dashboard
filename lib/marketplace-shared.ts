@@ -1,11 +1,13 @@
 export type ChannelId = "amazon" | "flipkart" | "myntra"
 
 export type PaymentStatus = "received" | "pending" | "partial" | "refunded" | "disputed"
+export type BrandId = "maniac" | "jumpcuts"
 
 export interface SettlementRecord {
   id: string
   uniqueKey: string
   channel: ChannelId
+  brand: BrandId
   marketplaceLabel: string
   orderId: string
   payoutReference: string
@@ -17,7 +19,6 @@ export interface SettlementRecord {
   disputes: number
   feeAmount: number
   status: PaymentStatus
-  currency: string
   sourceFile: string
   uploadedAt: string
   rawRow: Record<string, string>
@@ -77,6 +78,14 @@ export const CHANNELS: Array<{
   },
 ]
 
+export const BRANDS: Array<{
+  id: BrandId
+  label: string
+}> = [
+  { id: "maniac", label: "Maniac" },
+  { id: "jumpcuts", label: "Jumpcuts" },
+]
+
 export function getChannelConfig(channel: ChannelId) {
   return CHANNELS.find((item) => item.id === channel) ?? CHANNELS[0]
 }
@@ -97,21 +106,36 @@ export function normalizeChannel(value: string | null | undefined): ChannelId | 
   return null
 }
 
-export function formatCurrency(value: number, currency = "INR") {
+export function normalizeBrand(value: string | null | undefined): BrandId | null {
+  if (!value) return null
+
+  const normalized = value.trim().toLowerCase()
+
+  if (normalized.includes("maniac")) return "maniac"
+  if (normalized.includes("jumpcuts")) return "jumpcuts"
+
+  return null
+}
+
+export function getBrandConfig(brand: BrandId) {
+  return BRANDS.find((item) => item.id === brand) ?? BRANDS[0]
+}
+
+export function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency,
+    currency: "INR",
     maximumFractionDigits: 0,
   }).format(value)
 }
 
-export function formatCompactCurrency(value: number, currency = "INR") {
+export function formatCompactCurrency(value: number) {
   const formatted = new Intl.NumberFormat("en-IN", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(value)
 
-  return currency === "INR" ? `Rs ${formatted}` : `${currency} ${formatted}`
+  return `Rs ${formatted}`
 }
 
 export function formatInteger(value: number) {

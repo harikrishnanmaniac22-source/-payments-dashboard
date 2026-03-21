@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { importCsvFile } from "@/lib/payment-data"
+import { importCsvFile, isCsvValidationError } from "@/lib/payment-data"
 
 export async function POST(request: Request) {
   try {
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unexpected upload failure."
-    return NextResponse.json({ ok: false, error: message }, { status: 500 })
+    const status = isCsvValidationError(error) ? 400 : 500
+    return NextResponse.json({ ok: false, error: message }, { status })
   }
 }

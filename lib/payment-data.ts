@@ -5,7 +5,9 @@ import { unstable_noStore as noStore } from "next/cache"
 import {
   CHANNELS,
   getChannelConfig,
+  normalizeBrand,
   normalizeChannel,
+  type BrandId,
   type ChannelId,
   type ChannelSummary,
   type PaymentStatus,
@@ -29,11 +31,18 @@ const COLUMN_ALIASES = {
   disputes: ["disputes", "dispute_amount", "chargeback", "chargebacks"],
   feeAmount: ["fee_amount", "fees", "commission", "marketplace_fee"],
   status: ["status", "payment_status", "settlement_status"],
-  currency: ["currency"],
+  brand: ["brand", "brand_name", "label"],
 } as const
 
 type CsvImportResult = {
   batch: UploadBatch
+}
+
+class CsvValidationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = "CsvValidationError"
+  }
 }
 
 export async function getDashboardData() {
@@ -55,6 +64,13 @@ export async function getDashboardData() {
     recentSettlements,
     recentUploads,
   }
+}
+
+export async function getAllSettlementRecords() {
+  noStore()
+
+  const store = await readStore()
+  return [...store.records].sort((left, right) => right.settlementDate.localeCompare(left.settlementDate))
 }
 
 export async function getChannelDashboard(channel: ChannelId) {
@@ -94,6 +110,7 @@ export async function importCsvFile(fileName: string, csvText: string): Promise<
 
   const headers = rows[0]
   const now = new Date().toISOString()
+  validateUniqueOrderIds(rows, headers, fileName, now)
   const nextRecords = [...store.records]
   const indexByUniqueKey = new Map(nextRecords.map((record, index) => [record.uniqueKey, index]))
 
@@ -159,6 +176,10 @@ export async function importCsvFile(fileName: string, csvText: string): Promise<
   return { batch }
 }
 
+export function isCsvValidationError(error: unknown): error is CsvValidationError {
+  return error instanceof CsvValidationError
+}
+
 async function readStore(): Promise<SettlementStore> {
   await ensureStore()
 
@@ -166,7 +187,10 @@ async function readStore(): Promise<SettlementStore> {
   const parsed = JSON.parse(contents) as SettlementStore
 
   return {
-    records: parsed.records ?? [],
+    records: (parsed.records ?? []).map((record) => ({
+      ...record,
+      brand: normalizeBrand((record as SettlementRecord & { brand?: string }).brand) ?? inferBrandFromRecord(record),
+    })),
     uploads: parsed.uploads ?? [],
   }
 }
@@ -191,15 +215,12 @@ async function ensureStore() {
 }
 
 function summarizeRecords(records: SettlementRecord[]) {
-  const currency = records[0]?.currency ?? "INR"
-
   return {
     totalReceived: sum(records, "totalReceived"),
     pendingSettlements: sum(records, "pendingSettlements"),
     refunds: sum(records, "refunds"),
     disputes: sum(records, "disputes"),
     settlementCount: records.length,
-    currency,
   }
 }
 
@@ -250,7 +271,9 @@ function mapRowToSettlement(
   const refunds = parseAmount(readValue(row, COLUMN_ALIASES.refunds))
   const disputes = parseAmount(readValue(row, COLUMN_ALIASES.disputes))
   const feeAmount = parseAmount(readValue(row, COLUMN_ALIASES.feeAmount))
-  const currency = (readValue(row, COLUMN_ALIASES.currency) || "INR").toUpperCase()
+  const brand =
+    normalizeBrand(readValue(row, COLUMN_ALIASES.brand)) ??
+    inferBrandFromRow({ channel, fileName, orderId })
   const status = inferStatus({
     status: readValue(row, COLUMN_ALIASES.status),
     pendingSettlements,
@@ -283,11 +306,47 @@ function mapRowToSettlement(
     disputes,
     feeAmount,
     status,
-    currency,
+    brand,
     sourceFile: fileName,
     uploadedAt,
     rawRow: row,
   }
+}
+
+function validateUniqueOrderIds(
+  rows: string[][],
+  headers: string[],
+  fileName: string,
+  uploadedAt: string
+) {
+  const seenOrderIds = new Map<string, number>()
+
+  rows.slice(1).forEach((values, index) => {
+    const rowNumber = index + 2
+    const row = headers.reduce<Record<string, string>>((accumulator, header, headerIndex) => {
+      accumulator[header] = values[headerIndex] ?? ""
+      return accumulator
+    }, {})
+
+    const channel =
+      normalizeChannel(readValue(row, COLUMN_ALIASES.channel)) ?? normalizeChannel(fileName)
+    const orderId = readValue(row, COLUMN_ALIASES.orderId)
+
+    if (!channel || !orderId) {
+      return
+    }
+
+    const uniqueOrderKey = `${channel}|${orderId.trim().toLowerCase()}`
+    const firstSeenRow = seenOrderIds.get(uniqueOrderKey)
+
+    if (firstSeenRow !== undefined) {
+      throw new CsvValidationError(
+        `Duplicate order_id "${orderId}" found for ${channel} in rows ${firstSeenRow} and ${rowNumber}. Each order_id must be unique within the same channel upload.`
+      )
+    }
+
+    seenOrderIds.set(uniqueOrderKey, rowNumber)
+  })
 }
 
 function parseCsv(csvText: string) {
@@ -397,6 +456,38 @@ function inferStatus(input: {
   if (input.pendingSettlements > 0) return "pending"
 
   return "received"
+}
+
+function inferBrandFromRow(input: {
+  channel: ChannelId
+  fileName: string
+  orderId: string
+}): BrandId {
+  const fromFile = normalizeBrand(input.fileName)
+  if (fromFile) return fromFile
+
+  const seed = `${input.channel}|${input.orderId}`.toLowerCase()
+  return hashString(seed) % 2 === 0 ? "maniac" : "jumpcuts"
+}
+
+function inferBrandFromRecord(
+  record: Pick<SettlementRecord, "channel" | "sourceFile" | "orderId">
+): BrandId {
+  return inferBrandFromRow({
+    channel: record.channel,
+    fileName: record.sourceFile,
+    orderId: record.orderId,
+  })
+}
+
+function hashString(value: string) {
+  let hash = 0
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0
+  }
+
+  return hash
 }
 
 function sum(
