@@ -1,2 +1,2 @@
-marketplace,brand,order_id,payout_reference,settlement_date,total_received,pending_settlement,refunds,disputes,status,currency
-Amazon,Maniac,AMZ-TEMPLATE-0001,UTR-AMZ-TEMPLATE-0001,2026-03-20,125000,3500,800,0,pending,INR
+marketplace,brand,order_id,sku,invoice_amount,settlement,settlement_date,status,payout_reference,currency
+Amazon,Maniac,AMZ-TEMPLATE-0001,MNC-BLK-TSHIRT-S,1499,1325,2026-03-20,delivered,UTR-AMZ-TEMPLATE-0001,INR

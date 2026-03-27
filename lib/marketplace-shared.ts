@@ -1,6 +1,15 @@
 export type ChannelId = "amazon" | "flipkart" | "myntra"
 
-export type PaymentStatus = "received" | "pending" | "partial" | "refunded" | "disputed"
+export type PaymentStatus =
+  | "received"
+  | "pending"
+  | "partial"
+  | "refunded"
+  | "disputed"
+  | "delivered"
+  | "rto"
+  | "rtv"
+  | "not_delivered"
 export type BrandId = "maniac" | "jumpcuts"
 
 export interface SettlementRecord {
@@ -10,6 +19,9 @@ export interface SettlementRecord {
   brand: BrandId
   marketplaceLabel: string
   orderId: string
+  sku?: string
+  invoiceAmount?: number
+  reconciliationKey?: string
   payoutReference: string
   settlementDate: string
   grossAmount: number
@@ -21,7 +33,7 @@ export interface SettlementRecord {
   status: PaymentStatus
   sourceFile: string
   uploadedAt: string
-  rawRow: Record<string, string>
+  rawRow?: Record<string, string>
 }
 
 export interface UploadBatch {
@@ -38,6 +50,9 @@ export interface UploadBatch {
 export interface SettlementStore {
   records: SettlementRecord[]
   uploads: UploadBatch[]
+  syncState?: {
+    amazonFolderSignature?: string
+  }
 }
 
 export interface ChannelSummary {

@@ -13,7 +13,8 @@ export const dynamic = "force-dynamic"
 const parserRules = [
   "Identify the marketplace from `channel`, `marketplace`, or the file name.",
   "Normalize rows into a single settlements schema for Amazon, Flipkart, and Myntra.",
-  "Upsert records by channel + order + payout reference + settlement date.",
+  "Support Amazon reconciliation uploads with `order_id`, `sku`, `invoice_amount`, `settlement`, and delivery status values.",
+  "Upsert records by channel + order + sku + status + settlement.",
   "Recalculate overview and channel KPIs immediately after upload.",
 ]
 
@@ -48,7 +49,7 @@ export default async function UploadsPage() {
                 </div>
               ))}
               <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-200">
-                Production note: this local workspace persists data to a JSON store. The architecture doc outlines a Postgres schema for scaling this to production.
+                Production note: this local workspace persists data to a JSON store. The architecture doc outlines a Postgres schema for scaling this to production, and the Amazon template now reflects a reconciliation-ready layout.
               </div>
               <div className="grid gap-2">
                 <Button asChild variant="outline" className="w-full border-white/10 bg-transparent text-white hover:bg-white/5">
@@ -77,7 +78,7 @@ export default async function UploadsPage() {
         <div className="grid gap-4 lg:grid-cols-3">
           <InfoCard
             title="Validated Columns"
-            description="Flexible aliases are supported for amounts, dates, and identifiers."
+            description="Flexible aliases are supported for amounts, dates, identifiers, SKU-level rows, and Amazon delivery statuses."
             icon={ShieldCheck}
           />
           <InfoCard
