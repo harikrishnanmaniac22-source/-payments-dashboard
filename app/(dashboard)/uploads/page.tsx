@@ -1,12 +1,17 @@
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import { ArrowRight, DatabaseZap, FileSpreadsheet, ShieldCheck, type LucideIcon } from "lucide-react"
 
 import { DashboardHeader } from "@/components/dashboard-header"
-import { UploadCsvForm } from "@/components/upload-csv-form"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { getUploadHistory } from "@/lib/payment-data"
 import { formatDateTime } from "@/lib/marketplace-shared"
+
+const UploadCsvForm = dynamic(() => import("@/components/upload-csv-form").then(mod => mod.UploadCsvForm), {
+  ssr: false,
+  loading: () => <div className="h-[400px] w-full animate-pulse rounded-2xl bg-white/5" />,
+})
 
 export const dynamic = "force-dynamic"
 

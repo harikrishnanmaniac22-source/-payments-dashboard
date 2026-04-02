@@ -19,7 +19,9 @@ export interface SettlementRecord {
   brand: BrandId
   marketplaceLabel: string
   orderId: string
+  orderDate?: string
   sku?: string
+  quantity: number
   invoiceAmount?: number
   reconciliationKey?: string
   payoutReference: string
@@ -63,6 +65,7 @@ export interface ChannelSummary {
   refunds: number
   disputes: number
   settlementCount: number
+  totalUnits: number
   lastSettlementDate: string | null
   lastUploadAt: string | null
 }

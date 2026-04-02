@@ -43,6 +43,7 @@ const COLUMN_ALIASES = {
   channel: ["channel", "marketplace", "market_place", "platform", "source_channel"],
   orderId: ["order_id", "orderid", "order_number", "order number", "reference_id", "transaction_id"],
   sku: ["sku", "sku_id", "msku", "seller_sku", "item_sku"],
+  quantity: ["quantity", "qty", "units", "item_count"],
   payoutReference: ["payout_reference", "utr", "settlement_id", "batch_id", "reference"],
   settlementDate: ["settlement_date", "date", "transaction_date", "order_date", "settled_on"],
   grossAmount: ["gross_amount", "gross", "amount", "order_amount", "invoice_amount", "invoice value"],
@@ -407,6 +408,8 @@ async function buildAmazonFolderRecords(): Promise<SettlementRecord[]> {
   })
 
   const records: SettlementRecord[] = []
+  const rtoReasons = AMAZON_RTO_REASONS
+  const b2cFileName = AMAZON_B2C_FILE
 
   b2c
     .filter((row) => readAmazonValue(row, "Transaction Type").toLowerCase() === "shipment")
@@ -424,21 +427,21 @@ async function buildAmazonFolderRecords(): Promise<SettlementRecord[]> {
       const returnMatch = returnByPair.get(pairKey)
       const invoiceAmount = Math.abs(parseAmount(readAmazonValue(row, "Invoice Amount")))
       const quantity = Math.max(1, Math.abs(parseAmount(readAmazonValue(row, "Quantity"))))
-      const status = unifiedMatch
-        ? "delivered"
-        : returnMatch
-          ? AMAZON_RTO_REASONS.has(returnMatch.reason.toUpperCase())
-            ? "rto"
-            : "rtv"
+      const status = returnMatch
+        ? rtoReasons.some(rto => returnMatch.reason.toUpperCase().includes(rto))
+          ? "rto"
+          : "rtv"
+        : unifiedMatch
+          ? "delivered"
           : "not_delivered"
       const totalReceived = unifiedMatch ? unifiedMatch.settlement : 0
       const refunds = status === "rtv" ? invoiceAmount : 0
       const pendingSettlements = status === "not_delivered" || status === "rto" ? invoiceAmount : 0
       const settlementDate =
+        normalizeDate(readAmazonValue(row, "Order Date")) ||
         unifiedMatch?.latestDate ||
         returnMatch?.returnDate ||
         normalizeDate(readAmazonValue(row, "Shipment Date")) ||
-        normalizeDate(readAmazonValue(row, "Order Date")) ||
         normalizeDate(readAmazonValue(row, "Invoice Date"))
       const brand = inferBrandFromAmazonRow({
         sku,
@@ -463,7 +466,9 @@ async function buildAmazonFolderRecords(): Promise<SettlementRecord[]> {
         brand,
         marketplaceLabel: "Amazon",
         orderId,
+          orderDate: normalizeDate(readAmazonValue(row, "Order Date")),
         sku,
+          quantity: 1,
         invoiceAmount,
         reconciliationKey: `${orderId}|""|${sku}|${totalReceived.toFixed(2)}|${status}`,
         payoutReference: pairKey,
@@ -505,12 +510,19 @@ function readAmazonValue(row: Record<string, string>, header: string) {
 }
 
 function summarizeRecords(records: SettlementRecord[]) {
+  const distribution = records.reduce((acc, record) => {
+    acc[record.status] = (acc[record.status] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
   return {
     totalReceived: sum(records, "totalReceived"),
     pendingSettlements: sum(records, "pendingSettlements"),
     refunds: sum(records, "refunds"),
     disputes: sum(records, "disputes"),
+    totalUnits: sum(records, "quantity"),
     settlementCount: records.length,
+    statusDistribution: Object.entries(distribution).map(([name, value]) => ({ name, value })),
   }
 }
 
@@ -549,6 +561,7 @@ function getChannelSummaryFromRecords(records: SettlementRecord[], channel: Chan
     pendingSettlements: sum(channelRecords, "pendingSettlements"),
     refunds: sum(channelRecords, "refunds"),
     disputes: sum(channelRecords, "disputes"),
+    totalUnits: sum(channelRecords, "quantity"),
     settlementCount: channelRecords.length,
     lastSettlementDate,
     lastUploadAt,
@@ -570,6 +583,7 @@ function mapRowToSettlement(
   const marketplaceLabel = getChannelConfig(channel).label
   const orderId = readValue(row, COLUMN_ALIASES.orderId) || `UNMAPPED-${Date.now()}`
   const sku = readValue(row, COLUMN_ALIASES.sku)
+  const quantity = Math.max(1, parseAmount(readValue(row, COLUMN_ALIASES.quantity)))
   const payoutReference = readValue(row, COLUMN_ALIASES.payoutReference)
   const settlementDate = normalizeDate(
     readValue(row, COLUMN_ALIASES.settlementDate) || uploadedAt.slice(0, 10)
@@ -621,7 +635,9 @@ function mapRowToSettlement(
     channel,
     marketplaceLabel,
     orderId,
+    orderDate: normalizeDate(readValue(row, COLUMN_ALIASES.settlementDate)),
     sku: sku || undefined,
+    quantity,
     invoiceAmount: normalizedGross,
     reconciliationKey,
     payoutReference,
